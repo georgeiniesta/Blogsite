@@ -6,13 +6,16 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "georgeiniesta",
+  "engines": {
+    "node": "14.17.6"
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.18.3",
     "ejs": "^2.6.1",
     "express": "^4.16.3",
     "lodash": "^4.17.21",
+    "mongoose": "^6.0.8",
     "nodemon": "^2.0.13"
   }
 }

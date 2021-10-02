@@ -5,6 +5,8 @@ const bodyParser = require("body-parser");
 const ejs = require("ejs");
 // Using lodash to stdand names for routes
 const _ = require("lodash")
+//Require mongoose
+const mongoose = require("mongoose");
 
 
 
@@ -14,20 +16,34 @@ const contactContent = "Scelerisque eleifend donec pretium vulputate sapien. Rho
 
 const app = express();
 
+//Connecting to mongoose
+mongoose.connect('mongodb+srv://admin-george:george123@cluster0.5j0sm.mongodb.net/blogDB?retryWrites=true&w=majority');
+// creating schema
+const postSchema= {
+  title:String,
+  content:String
+};
+//Creating model
+const Post = mongoose.model("Post", postSchema);
+
+
 app.set('view engine', 'ejs');
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("public"));
 // creating array
-let posts = [];
+// let posts = [];
 // Adding home page
 app.get("/", function(req, res){
+  Post.find({}, function(err, posts){
   res.render("home",{
     homeS1Content: homeStartingContent,
-    postsArray: posts
+    posts: posts
+
   })
   // adding compose to main page
 
+})
 })
 
 // Adding About page
@@ -50,29 +66,43 @@ app.get("/compose", function(req, res){
 // defining post request using body parser by req.body + our var
 app.post("/compose", function(req, res){
   // creating js Object()
-  const post = {
+  const post = new Post({
     title: req.body.postTitle,
     content: req.body.postBody
-  }
-  posts.push(post)
-  res.redirect("/")
+  })
+  // posts.push(post)
+  post.save(function(err){
+    if(!err){
+      res.redirect("/")
+    }
+  })
 })
 
 // using route params
-app.get("/posts/:postName", function(req, res){
-  const requestedTitle = _.lowerCase(req.params.postName)
-  posts.forEach(function(post){
-    let storedTitle = _.lowerCase(post.title)
+app.get("/posts/:postId", function(req, res){
 
-    if(storedTitle === requestedTitle){
-      // console.log("Match found")
-      res.render("post",{
-        // using post Object from above 
-        title :post.title,
-        content :post.content
-      })
-    }
+  const requestPostId = req.params.postID;
+
+  Post.findOne({_id:requestPostId}, function(err, post){
+    res.render("post", {
+      title:post.title,
+      content: post.content
+    })
   })
+
+  // const requestedTitle = _.lowerCase(req.params.postName)
+  // posts.forEach(function(post){
+  //   let storedTitle = _.lowerCase(post.title)
+  //
+  //   if(storedTitle === requestedTitle){
+  //     // console.log("Match found")
+  //     res.render("post",{
+  //       // using post Object from above
+  //       title :post.title,
+  //       content :post.content
+  //     })
+  //   }
+  // })
 })
 
 

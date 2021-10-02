@@ -5,18 +5,16 @@
 <div class="home">
 <p> <%= homeS1Content %> </p>
 
-<% console.log(postsArray) %>
+<%  posts.forEach(function(post){ %>
 
-<!-- Using for each loop-->
-
-<% postsArray.forEach(function(postArray){ %>
-  <h1><%=postArray.title %></h1>
-  <p><%= postArray.content.substring(0, 100) + "..."%>
-  <a href="/posts/<%=postArray.title%>">Read More</a></p>
-<% }) %>
+  <h1><%=post.title%></h1>
+  <p>
+  <%=post.content.substring(0, 100) + " ..."%>
+  <a href="/posts/<%=post._id%>">Read More</a>
+  </p>
 
 
-
+  <% }) %>
 
 
  </div>
